@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const { dj, instagram, message, monto } = body;
+    const { dj, instagram, mensaje, monto } = body;
 
     const result = await sql`
       INSERT INTO tips (
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
       VALUES (
         ${dj},
         ${instagram},
-        ${message},
+        ${mensaje},
         ${monto}
       )
       RETURNING *
