@@ -22,7 +22,7 @@ export default function DJPage({
     }
 
     try {
-      const response = await fetch("/api/tips", {
+      const response = await fetch("/api/create-preference", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -30,19 +30,19 @@ export default function DJPage({
         body: JSON.stringify({
           dj,
           instagram,
-          mensaje: message,
-          monto: selectedAmount,
+          coment: message,
+          amount: selectedAmount,
         }),
       });
 
       const data = await response.json();
 
       if (!data.success) {
-        alert("Error guardando apoyo");
+        alert("Error creando pago");
         return;
       }
 
-      setCompleted(true);
+      window.location.href = data.init_point;
     } catch (error) {
       console.error(error);
       alert("Error guardando apoyo");
