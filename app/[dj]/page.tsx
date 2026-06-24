@@ -66,7 +66,7 @@ export default function DJPage({
             Gracias por apoyar a
           </h1>
 
-          <h2 className="text-4xl font-black text-violet-500 uppercase mb-6">
+          <h2 className="text-4xl font-black text-violet-500 uppercase mb-6 break-words">
             {dj}
           </h2>
 
@@ -96,20 +96,20 @@ export default function DJPage({
           <Image
             src="/logo.png"
             alt="DJPAY"
-            width={180}
-            height={180}
+            width={160}
+            height={160}
             className="mx-auto mb-4"
           />
 
-          <h1 className="text-5xl font-black uppercase tracking-wider">
+          <h1 className="text-3xl sm:text-5xl font-black uppercase leading-tight break-words text-center px-2">
             {dj}
           </h1>
 
-          <p className="text-violet-500 font-semibold text-lg mt-2">
+          <p className="text-violet-500 font-semibold text-base sm:text-lg mt-2 break-all">
             @{dj}
           </p>
 
-          <p className="text-neutral-600 mt-4">
+          <p className="text-neutral-600 mt-4 px-2">
             Apoya la música que estás disfrutando
           </p>
 
