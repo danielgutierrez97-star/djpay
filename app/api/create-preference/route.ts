@@ -79,14 +79,14 @@ export async function POST(req: Request) {
       id: response.id,
     });
   } catch (error) {
-    console.error(error);
+  console.error("ERROR MP:");
+  console.error(error);
 
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Error creando preferencia",
-      },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json(
+    {
+      success: false,
+      error: JSON.stringify(error),
+    },
+    { status: 500 }
+  );
 }
