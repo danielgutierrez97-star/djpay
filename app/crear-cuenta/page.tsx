@@ -51,11 +51,14 @@ export default function CrearCuenta() {
 
     if (data.success) {
       alert(
-        `Cuenta creada correctamente.\n\nTu código de verificación es:\n\n${data.codigoVerificacion}\n\nEnvíalo por mensaje directo a @djpay.cl para verificar que la cuenta de Instagram te pertenece.\n\nTu solicitud quedará pendiente de aprobación.`
+        `✅ Cuenta creada correctamente.\n\nTu código de verificación es:\n\n${data.codigoVerificacion}\n\nEnvíalo por mensaje directo a @djpay.cl para verificar que la cuenta de Instagram te pertenece.\n\nTu solicitud quedará pendiente de aprobación.\n\nAhora volverás al inicio.`
       );
-    } else {
-      alert(data.error || "Error al crear cuenta.");
+
+      window.location.href = "/";
+      return;
     }
+
+    alert(data.error || "Error al crear cuenta.");
   }
 
   function cambiarMetodo(tipo: string) {
@@ -72,7 +75,7 @@ export default function CrearCuenta() {
 
   return (
     <main className="min-h-screen bg-[#f7f7f7] flex items-center justify-center p-6">
-      <div className="w-full max-w-md bg-white border-2 border-black rounded-[32px] p-8 shadow-xl">
+      <div className="w-full max-w-md bg-white border-2 border-black rounded-[32px] p-8 shadow-2xl">
 
         <div className="text-center mb-8">
           <img
