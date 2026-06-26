@@ -4,23 +4,50 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Permitir acceso al login
-  if (pathname === "/backoffice/login") {
-    return NextResponse.next();
+  /*
+   |--------------------------------------------------------------------------
+   | BACKOFFICE
+   |--------------------------------------------------------------------------
+   */
+
+  if (pathname.startsWith("/backoffice")) {
+    if (pathname === "/backoffice/login") {
+      return NextResponse.next();
+    }
+
+    const adminSession =
+      request.cookies.get("admin_session");
+
+    if (!adminSession) {
+      return NextResponse.redirect(
+        new URL("/backoffice/login", request.url)
+      );
+    }
   }
 
-  // Verificar sesión
-  const session = request.cookies.get("admin_session");
+  /*
+   |--------------------------------------------------------------------------
+   | DASHBOARD DJ
+   |--------------------------------------------------------------------------
+   */
 
-  if (!session) {
-    return NextResponse.redirect(
-      new URL("/backoffice/login", request.url)
-    );
+  if (pathname.startsWith("/dashboard")) {
+    const djSession =
+      request.cookies.get("dj_session");
+
+    if (!djSession) {
+      return NextResponse.redirect(
+        new URL("/login", request.url)
+      );
+    }
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/backoffice/:path*"],
+  matcher: [
+    "/backoffice/:path*",
+    "/dashboard/:path*",
+  ],
 };
