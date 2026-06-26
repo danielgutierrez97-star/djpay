@@ -50,7 +50,9 @@ export default function CrearCuenta() {
     const data = await response.json();
 
     if (data.success) {
-      alert("Cuenta creada. Será revisada por DJPAY.");
+      alert(
+        `Cuenta creada correctamente.\n\nTu código de verificación es:\n\n${data.codigoVerificacion}\n\nEnvíalo por mensaje directo a @djpay.cl para verificar que la cuenta de Instagram te pertenece.\n\nTu solicitud quedará pendiente de aprobación.`
+      );
     } else {
       alert(data.error || "Error al crear cuenta.");
     }
@@ -271,6 +273,19 @@ export default function CrearCuenta() {
               })
             }
           />
+
+          <div className="border-2 border-violet-200 bg-violet-50 rounded-xl p-4">
+            <p className="font-bold text-violet-700 mb-2">
+              Verificación Instagram
+            </p>
+
+            <p className="text-sm text-gray-600">
+              DJPay generará automáticamente un código de verificación.
+              Después de crear tu cuenta, deberás enviarlo por mensaje
+              directo a <strong>@djpay.cl</strong> para validar que la
+              cuenta de Instagram te pertenece.
+            </p>
+          </div>
 
           <button
             onClick={registrar}

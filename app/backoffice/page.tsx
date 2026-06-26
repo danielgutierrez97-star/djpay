@@ -20,6 +20,16 @@ export default async function AdminHome() {
     ORDER BY created_at DESC
   `;
 
+  const solicitudesPendientes = await sql`
+    SELECT COUNT(*) as total
+    FROM djs
+    WHERE activo = false
+  `;
+
+  const totalSolicitudes = Number(
+    solicitudesPendientes[0].total
+  );
+
   const ultimaLiquidacionMap = new Map();
 
   liquidaciones.forEach((liquidacion: any) => {
@@ -108,6 +118,25 @@ export default async function AdminHome() {
               "
             >
               Historial
+            </Link>
+
+            <Link
+              href="/backoffice/solicitudes"
+              className="
+                border
+                border-black
+                rounded-xl
+                px-4
+                py-2
+                text-sm
+                font-medium
+                hover:bg-violet-50
+                transition
+              "
+            >
+              🔔 Solicitudes
+              {totalSolicitudes > 0 &&
+                ` (${totalSolicitudes})`}
             </Link>
 
             <LogoutButton />

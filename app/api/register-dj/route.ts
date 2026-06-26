@@ -8,6 +8,12 @@ function generarToken() {
   return crypto.randomUUID();
 }
 
+function generarCodigoVerificacion() {
+  return Math.floor(
+    10000 + Math.random() * 90000
+  ).toString();
+}
+
 export async function POST(request: Request) {
   try {
     const {
@@ -56,6 +62,9 @@ export async function POST(request: Request) {
 
     const tokenAdmin = generarToken();
 
+    const codigoVerificacion =
+      generarCodigoVerificacion();
+
     await sql`
       INSERT INTO djs (
         nombre,
@@ -67,6 +76,8 @@ export async function POST(request: Request) {
         numero_cuenta,
         tipo_liquidacion,
         comision,
+        codigo_verificacion,
+        instagram_verificado,
         password_hash,
         token_admin,
         activo
@@ -81,6 +92,8 @@ export async function POST(request: Request) {
         ${numero_cuenta},
         ${tipo_liquidacion || "TRANSFERENCIA"},
         ${comision || 12},
+        ${codigoVerificacion},
+        false,
         ${passwordHash},
         ${tokenAdmin},
         false
@@ -89,7 +102,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
+      codigoVerificacion,
     });
+
   } catch (error) {
     console.error(error);
 
