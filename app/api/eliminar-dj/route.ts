@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { neon } from "@neondatabase/serverless";
 
 const sql = neon(process.env.DATABASE_URL!);
@@ -23,9 +24,13 @@ export async function POST(request: Request) {
       WHERE id = ${djId}
     `;
 
+    revalidatePath("/backoffice");
+    revalidatePath("/backoffice/solicitudes");
+
     return NextResponse.json({
       success: true,
     });
+
   } catch (error) {
     console.error(error);
 

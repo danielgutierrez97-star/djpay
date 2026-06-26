@@ -18,31 +18,52 @@ export default function EliminarDJButton({
       return;
     }
 
-    const response = await fetch(
-      "/api/eliminar-dj",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-        body: JSON.stringify({
-          djId,
-        }),
+    try {
+      console.log("Eliminando DJ:", djId);
+
+      const response = await fetch(
+        "/api/eliminar-dj",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            djId,
+          }),
+        }
+      );
+
+      console.log(
+        "Status:",
+        response.status
+      );
+
+      const data = await response.json();
+
+      console.log("Respuesta:", data);
+
+      if (data.success) {
+        alert("DJ eliminado");
+
+        router.refresh();
+
+        return;
       }
-    );
 
-    const data = await response.json();
+      alert(
+        data.error ||
+          "Error eliminando DJ"
+      );
 
-    if (data.success) {
-      router.refresh();
-      return;
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Error inesperado. Revisa la consola."
+      );
     }
-
-    alert(
-      data.error ||
-        "Error eliminando DJ"
-    );
   }
 
   return (

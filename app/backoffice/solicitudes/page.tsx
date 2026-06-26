@@ -6,6 +6,8 @@ import AprobarDJButton from "@/components/AprobarDJButton";
 import EliminarDJButton from "@/components/EliminarDJButton";
 import VerificarInstagramButton from "@/components/VerificarInstagramButton";
 
+export const dynamic = "force-dynamic";
+
 const sql = neon(process.env.DATABASE_URL!);
 
 export default async function SolicitudesPage() {
@@ -198,7 +200,7 @@ export default async function SolicitudesPage() {
                         Código Instagram:
                       </span>{" "}
                       <span className="font-mono text-violet-600 font-bold">
-                        {dj.codigo_verificacion}
+                        {dj.codigo_verificacion || "-"}
                       </span>
                     </div>
 
