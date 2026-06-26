@@ -45,12 +45,35 @@ export default function Home() {
             DJPAY
           </h1>
 
-          <a
-            href="/crear-cuenta"
-            className="text-violet-600 font-bold"
-          >
-            Crear cuenta
-          </a>
+          <div className="flex items-center gap-4">
+
+            <a
+              href="/login"
+              className="
+                border-2
+                border-black
+                px-4
+                py-2
+                rounded-xl
+                font-bold
+                hover:bg-violet-50
+                transition
+              "
+            >
+              Iniciar sesión
+            </a>
+
+            <a
+              href="/crear-cuenta"
+              className="
+                text-violet-600
+                font-bold
+              "
+            >
+              Crear cuenta
+            </a>
+
+          </div>
 
         </div>
 
