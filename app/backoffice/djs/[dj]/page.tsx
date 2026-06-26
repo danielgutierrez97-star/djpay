@@ -49,7 +49,6 @@ export default async function AdminHome() {
 
   return (
     <main className="min-h-screen bg-white text-black p-8">
-
       <div className="max-w-7xl mx-auto">
 
         <div className="flex items-center justify-between mb-10">
@@ -177,7 +176,7 @@ export default async function AdminHome() {
                   <td className="p-5">
 
                     <Link
-                      href={`/admin/${dj.nombre}`}
+                      href={`/backoffice/djs/${dj.nombre}`}
                       className="bg-violet-600 text-white px-4 py-2 rounded-xl font-bold"
                     >
                       👁 Ver DJ
@@ -195,7 +194,6 @@ export default async function AdminHome() {
         </div>
 
       </div>
-
     </main>
   );
 }

@@ -2,6 +2,28 @@
 
 import { useState } from "react";
 
+const BANCOS = [
+  "Banco de Chile",
+  "Banco Estado",
+  "Santander",
+  "BCI",
+  "Scotiabank",
+  "Itaú",
+  "Banco Falabella",
+  "Banco Security",
+  "Banco Internacional",
+  "Mercado Pago",
+  "Otro",
+];
+
+const TIPOS_CUENTA = [
+  "Cuenta Corriente",
+  "Cuenta Vista",
+  "Cuenta de Ahorro",
+  "Cuenta Empresa",
+  "Otra",
+];
+
 export default function CrearCuenta() {
   const [form, setForm] = useState({
     nombre: "",
@@ -12,6 +34,8 @@ export default function CrearCuenta() {
     banco: "",
     tipo_cuenta: "",
     numero_cuenta: "",
+    tipo_liquidacion: "TRANSFERENCIA",
+    comision: 12,
   });
 
   async function registrar() {
@@ -32,13 +56,23 @@ export default function CrearCuenta() {
     }
   }
 
+  function cambiarMetodo(tipo: string) {
+    setForm({
+      ...form,
+      tipo_liquidacion: tipo,
+      comision: tipo === "MERCADOPAGO" ? 11 : 12,
+      banco:
+        tipo === "MERCADOPAGO"
+          ? "Mercado Pago"
+          : "",
+    });
+  }
+
   return (
     <main className="min-h-screen bg-[#f7f7f7] flex items-center justify-center p-6">
-
       <div className="w-full max-w-md bg-white border-2 border-black rounded-[32px] p-8 shadow-xl">
 
         <div className="text-center mb-8">
-
           <img
             src="/logo.png"
             alt="DJPAY"
@@ -52,74 +86,184 @@ export default function CrearCuenta() {
           <p className="text-gray-600 mt-2">
             Registra tu perfil DJ en DJPAY
           </p>
-
         </div>
 
         <div className="flex flex-col gap-4">
 
           <input
             placeholder="Nombre DJ"
-            className="w-full p-4 rounded-xl border-2 border-gray-300 text-black placeholder-gray-500 bg-white"
+            className="w-full h-[58px] px-4 rounded-xl border-2 border-gray-300 text-black bg-white"
             onChange={(e) =>
-              setForm({ ...form, nombre: e.target.value })
+              setForm({
+                ...form,
+                nombre: e.target.value,
+              })
             }
           />
 
           <input
             placeholder="Instagram"
-            className="w-full p-4 rounded-xl border-2 border-gray-300 text-black placeholder-gray-500 bg-white"
+            className="w-full h-[58px] px-4 rounded-xl border-2 border-gray-300 text-black bg-white"
             onChange={(e) =>
-              setForm({ ...form, instagram: e.target.value })
+              setForm({
+                ...form,
+                instagram: e.target.value,
+              })
             }
           />
 
           <input
             placeholder="Email"
-            className="w-full p-4 rounded-xl border-2 border-gray-300 text-black placeholder-gray-500 bg-white"
+            className="w-full h-[58px] px-4 rounded-xl border-2 border-gray-300 text-black bg-white"
             onChange={(e) =>
-              setForm({ ...form, email: e.target.value })
+              setForm({
+                ...form,
+                email: e.target.value,
+              })
             }
           />
 
           <input
             type="password"
             placeholder="Contraseña"
-            className="w-full p-4 rounded-xl border-2 border-gray-300 text-black placeholder-gray-500 bg-white"
+            className="w-full h-[58px] px-4 rounded-xl border-2 border-gray-300 text-black bg-white"
             onChange={(e) =>
-              setForm({ ...form, password: e.target.value })
+              setForm({
+                ...form,
+                password: e.target.value,
+              })
             }
           />
+
+          <div className="border-2 border-gray-300 rounded-xl p-4">
+            <p className="font-bold text-black mb-3">
+              Método de cobro
+            </p>
+
+            <label className="flex items-center gap-3 mb-2 text-black cursor-pointer">
+              <input
+                type="radio"
+                checked={
+                  form.tipo_liquidacion ===
+                  "TRANSFERENCIA"
+                }
+                onChange={() =>
+                  cambiarMetodo("TRANSFERENCIA")
+                }
+              />
+
+              <span>
+                Transferencia bancaria (12% comisión)
+              </span>
+            </label>
+
+            <label className="flex items-center gap-3 text-black cursor-pointer">
+              <input
+                type="radio"
+                checked={
+                  form.tipo_liquidacion ===
+                  "MERCADOPAGO"
+                }
+                onChange={() =>
+                  cambiarMetodo("MERCADOPAGO")
+                }
+              />
+
+              <span>
+                Mercado Pago (11% comisión)
+              </span>
+            </label>
+          </div>
 
           <input
             placeholder="RUT"
-            className="w-full p-4 rounded-xl border-2 border-gray-300 text-black placeholder-gray-500 bg-white"
+            className="w-full h-[58px] px-4 rounded-xl border-2 border-gray-300 text-black bg-white"
             onChange={(e) =>
-              setForm({ ...form, rut: e.target.value })
+              setForm({
+                ...form,
+                rut: e.target.value,
+              })
             }
           />
 
-          <input
-            placeholder="Banco"
-            className="w-full p-4 rounded-xl border-2 border-gray-300 text-black placeholder-gray-500 bg-white"
-            onChange={(e) =>
-              setForm({ ...form, banco: e.target.value })
+          <select
+            value={form.banco}
+            disabled={
+              form.tipo_liquidacion ===
+              "MERCADOPAGO"
             }
-          />
+            className="
+              w-full
+              h-[58px]
+              px-4
+              rounded-xl
+              border-2
+              border-gray-300
+              text-black
+              bg-white
+              appearance-none
+              disabled:bg-gray-100
+              disabled:text-gray-500
+              disabled:cursor-not-allowed
+            "
+            onChange={(e) =>
+              setForm({
+                ...form,
+                banco: e.target.value,
+              })
+            }
+          >
+            <option value="">
+              Selecciona tu banco
+            </option>
 
-          <input
-            placeholder="Tipo de cuenta"
-            className="w-full p-4 rounded-xl border-2 border-gray-300 text-black placeholder-gray-500 bg-white"
+            {BANCOS.map((banco) => (
+              <option
+                key={banco}
+                value={banco}
+              >
+                {banco}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={form.tipo_cuenta}
+            className="
+              w-full
+              h-[58px]
+              px-4
+              rounded-xl
+              border-2
+              border-gray-300
+              text-black
+              bg-white
+              appearance-none
+            "
             onChange={(e) =>
               setForm({
                 ...form,
                 tipo_cuenta: e.target.value,
               })
             }
-          />
+          >
+            <option value="">
+              Tipo de cuenta
+            </option>
+
+            {TIPOS_CUENTA.map((tipo) => (
+              <option
+                key={tipo}
+                value={tipo}
+              >
+                {tipo}
+              </option>
+            ))}
+          </select>
 
           <input
             placeholder="Número de cuenta"
-            className="w-full p-4 rounded-xl border-2 border-gray-300 text-black placeholder-gray-500 bg-white"
+            className="w-full h-[58px] px-4 rounded-xl border-2 border-gray-300 text-black bg-white"
             onChange={(e) =>
               setForm({
                 ...form,
@@ -138,7 +282,6 @@ export default function CrearCuenta() {
         </div>
 
       </div>
-
     </main>
   );
 }

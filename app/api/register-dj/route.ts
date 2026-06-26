@@ -19,6 +19,8 @@ export async function POST(request: Request) {
       banco,
       tipo_cuenta,
       numero_cuenta,
+      tipo_liquidacion,
+      comision,
     } = await request.json();
 
     if (
@@ -63,6 +65,8 @@ export async function POST(request: Request) {
         banco,
         tipo_cuenta,
         numero_cuenta,
+        tipo_liquidacion,
+        comision,
         password_hash,
         token_admin,
         activo
@@ -75,6 +79,8 @@ export async function POST(request: Request) {
         ${banco},
         ${tipo_cuenta},
         ${numero_cuenta},
+        ${tipo_liquidacion || "TRANSFERENCIA"},
+        ${comision || 12},
         ${passwordHash},
         ${tokenAdmin},
         false
