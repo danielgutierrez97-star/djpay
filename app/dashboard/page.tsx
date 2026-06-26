@@ -105,7 +105,7 @@ export default async function DashboardPage() {
                 rounded-2xl
                 p-4
                 font-bold
-                hover:bg-gray-100
+                hover:bg-black-100
                 transition
               "
             >
