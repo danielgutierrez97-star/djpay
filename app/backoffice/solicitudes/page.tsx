@@ -47,49 +47,21 @@ export default async function SolicitudesPage() {
 
             <Link
               href="/backoffice"
-              className="
-                border
-                border-black
-                rounded-xl
-                px-4
-                py-2
-                text-sm
-                font-medium
-                hover:bg-violet-50
-                transition
-              "
+              className="border border-black rounded-xl px-4 py-2 text-sm font-medium hover:bg-violet-50 transition"
             >
               Dashboard
             </Link>
 
             <Link
               href="/backoffice/liquidaciones"
-              className="
-                border
-                border-black
-                rounded-xl
-                px-4
-                py-2
-                text-sm
-                font-medium
-                hover:bg-violet-50
-                transition
-              "
+              className="border border-black rounded-xl px-4 py-2 text-sm font-medium hover:bg-violet-50 transition"
             >
               Historial
             </Link>
 
             <Link
               href="/backoffice/solicitudes"
-              className="
-                bg-violet-600
-                text-white
-                rounded-xl
-                px-4
-                py-2
-                text-sm
-                font-medium
-              "
+              className="bg-violet-600 text-white rounded-xl px-4 py-2 text-sm font-medium"
             >
               Solicitudes
             </Link>
@@ -107,6 +79,10 @@ export default async function SolicitudesPage() {
             <h2 className="text-2xl font-semibold">
               Solicitudes pendientes
             </h2>
+
+            <p className="text-red-600 font-bold mt-2">
+              TEST VERSION 26 JUNIO - {new Date().toISOString()}
+            </p>
 
             <p className="text-sm text-neutral-500 mt-1">
               DJs registrados pendientes de validación
