@@ -100,12 +100,14 @@ export default async function DashboardPage() {
                 block
                 w-full
                 text-center
+                bg-black
+                text-white
                 border-2
                 border-black
                 rounded-2xl
                 p-4
                 font-bold
-                hover:bg-black-100
+                hover:opacity-90
                 transition
               "
             >
