@@ -41,39 +41,33 @@ export default function Home() {
 
         <div className="flex justify-between items-center mb-8">
 
-          <h1 className="text-2xl font-black">
-            DJPAY
-          </h1>
+          <a
+            href="/login"
+            className="
+              border-2
+              border-black
+              px-4
+              py-2
+              rounded-xl
+              text-sm
+              font-semibold
+              hover:bg-violet-50
+              transition
+            "
+          >
+            Iniciar sesión
+          </a>
 
-          <div className="flex items-center gap-4">
-
-            <a
-              href="/login"
-              className="
-                border-2
-                border-black
-                px-4
-                py-2
-                rounded-xl
-                font-bold
-                hover:bg-violet-50
-                transition
-              "
-            >
-              Iniciar sesión
-            </a>
-
-            <a
-              href="/crear-cuenta"
-              className="
-                text-violet-600
-                font-bold
-              "
-            >
-              Crear cuenta
-            </a>
-
-          </div>
+          <a
+            href="/crear-cuenta"
+            className="
+              text-violet-600
+              text-sm
+              font-bold
+            "
+          >
+            Crear cuenta
+          </a>
 
         </div>
 
