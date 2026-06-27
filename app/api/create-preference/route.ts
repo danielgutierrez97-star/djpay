@@ -98,14 +98,21 @@ export async function POST(req: Request) {
       id: response.id,
     });
 
-  } catch (error) {
-    console.error("ERROR MP:");
+  } catch (error: any) {
+
+    console.error("========== ERROR MP ==========");
     console.error(error);
+    console.error("MESSAGE:", error?.message);
+    console.error("CAUSE:", error?.cause);
+    console.error("STATUS:", error?.status);
+    console.error("RESPONSE:", error?.response);
+    console.error("==============================");
 
     return NextResponse.json(
       {
         success: false,
-        error: JSON.stringify(error),
+        error: error?.message || "Error desconocido",
+        details: error?.response || error,
       },
       { status: 500 }
     );
