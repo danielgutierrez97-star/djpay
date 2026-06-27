@@ -102,10 +102,35 @@ export async function POST(req: Request) {
 
     console.error("========== ERROR MP ==========");
     console.error(error);
-    console.error("MESSAGE:", error?.message);
-    console.error("CAUSE:", error?.cause);
-    console.error("STATUS:", error?.status);
-    console.error("RESPONSE:", error?.response);
+
+    console.error(
+      "MESSAGE:",
+      error?.message
+    );
+
+    console.error(
+      "CAUSE:",
+      JSON.stringify(
+        error?.cause,
+        null,
+        2
+      )
+    );
+
+    console.error(
+      "STATUS:",
+      error?.status
+    );
+
+    console.error(
+      "RESPONSE:",
+      JSON.stringify(
+        error?.response,
+        null,
+        2
+      )
+    );
+
     console.error("==============================");
 
     return NextResponse.json(
