@@ -88,6 +88,10 @@ export async function POST(req: Request) {
         },
       });
 
+    console.log("========== INIT POINT ==========");
+    console.log(response.init_point);
+    console.log("================================");
+
     return NextResponse.json({
       success: true,
       init_point: response.init_point,
