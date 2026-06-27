@@ -2,6 +2,7 @@
 
 import { useState, use } from "react";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 
 export default function DJPage({
   params,
@@ -9,6 +10,17 @@ export default function DJPage({
   params: Promise<{ dj: string }>;
 }) {
   const { dj } = use(params);
+
+  const rutasReservadas = [
+    "login",
+    "dashboard",
+    "backoffice",
+    "crear-cuenta",
+  ];
+
+  if (rutasReservadas.includes(dj.toLowerCase())) {
+    notFound();
+  }
 
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [instagram, setInstagram] = useState("");
@@ -30,7 +42,7 @@ export default function DJPage({
         body: JSON.stringify({
           dj,
           instagram,
-          coment: message,
+          comment: message,
           amount: selectedAmount,
         }),
       });
@@ -38,11 +50,21 @@ export default function DJPage({
       const data = await response.json();
 
       if (!data.success) {
-        alert("Error creando pago");
+        console.log("========== ERROR DJPAY ==========");
+        console.log(data);
+        console.log("=================================");
+
+        alert(
+          `Error creando pago:\n\n${
+            data.error || "Error desconocido"
+          }`
+        );
+
         return;
       }
 
       window.location.href = data.init_point;
+
     } catch (error) {
       console.error(error);
       alert("Error guardando apoyo");
