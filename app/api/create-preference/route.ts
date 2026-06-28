@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server";
 import { MercadoPagoConfig, Preference } from "mercadopago";
-import postgres from "postgres";
 
 const client = new MercadoPagoConfig({
   accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN!,
 });
-
-const sql = postgres(process.env.DATABASE_URL!);
 
 export async function GET() {
   return NextResponse.json({
@@ -39,21 +36,6 @@ export async function POST(req: Request) {
       );
     }
 
-    await sql`
-      INSERT INTO tips (
-        dj,
-        instagram,
-        comentario,
-        monto
-      )
-      VALUES (
-        ${dj},
-        ${instagram || ""},
-        ${comment || ""},
-        ${amount}
-      )
-    `;
-
     const preference = new Preference(client);
 
     const response = await preference.create({
@@ -77,6 +59,12 @@ export async function POST(req: Request) {
         auto_return: "approved",
 
         external_reference: `${dj}-${Date.now()}`,
+
+        metadata: {
+          dj,
+          instagram: instagram || "",
+          comment: comment || "",
+        },
       },
     });
 
