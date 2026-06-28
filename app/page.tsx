@@ -7,25 +7,25 @@ export default function Home() {
   const [resultados, setResultados] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  async function buscarDJ() {
-    if (!query.trim()) return;
+  async function buscarDJ(texto: string) {
+    setQuery(texto);
+
+    if (!texto.trim()) {
+      setResultados([]);
+      return;
+    }
 
     setLoading(true);
 
     try {
-      const response = await fetch("/api/search-dj", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query,
-        }),
-      });
+      const response = await fetch(
+        `/api/search-dj?q=${encodeURIComponent(texto)}`
+      );
 
       const data = await response.json();
 
       setResultados(data);
+
     } catch (error) {
       console.error(error);
       alert("Error buscando DJs");
@@ -83,48 +83,68 @@ export default function Home() {
             Recibe aportes mientras tocas.
           </h2>
 
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Buscar DJ por nombre o Instagram..."
-            className="w-full p-4 rounded-xl border border-violet-400 outline-none focus:border-violet-600 mb-4"
-          />
+          <div className="relative">
 
-          <button
-            onClick={buscarDJ}
-            className="w-full bg-violet-600 text-white font-bold py-4 rounded-xl mb-4"
-          >
-            Buscar
-          </button>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => buscarDJ(e.target.value)}
+              placeholder="Buscar DJ por nombre o Instagram..."
+              className="
+                w-full
+                p-4
+                rounded-xl
+                border
+                border-violet-400
+                outline-none
+                focus:border-violet-600
+                mb-2
+              "
+            />
 
-          {loading && (
-            <p className="mb-4">
-              Buscando...
-            </p>
-          )}
+            {loading && (
+              <p className="mb-4 text-sm text-gray-500">
+                Buscando...
+              </p>
+            )}
 
-          {resultados.length > 0 && (
-            <div className="mb-8 flex flex-col gap-3">
+            {resultados.length > 0 && (
+              <div className="
+                mb-8
+                flex
+                flex-col
+                gap-2
+              ">
 
-              {resultados.map((dj) => (
-                <a
-                  key={dj.id}
-                  href={`/${dj.instagram}`}
-                  className="border rounded-xl p-4 text-left hover:bg-gray-50"
-                >
-                  <div className="font-bold">
-                    {dj.nombre}
-                  </div>
+                {resultados.map((dj) => (
+                  <a
+                    key={dj.instagram}
+                    href={`/${dj.instagram}`}
+                    className="
+                      border
+                      border-violet-200
+                      rounded-xl
+                      p-4
+                      text-left
+                      hover:bg-violet-50
+                      transition
+                    "
+                  >
+                    <div className="font-bold">
+                      {dj.nombre}
+                    </div>
 
-                  <div className="text-gray-500">
-                    @{dj.instagram}
-                  </div>
-                </a>
-              ))}
+                    <div className="text-gray-500">
+                      @{dj.instagram}
+                    </div>
 
-            </div>
-          )}
+                  </a>
+                ))}
+
+              </div>
+            )}
+
+          </div>
 
         </div>
 

@@ -29,13 +29,6 @@ export async function POST(req: Request) {
       comment,
     } = await req.json();
 
-    console.log("========== DJPAY ==========");
-    console.log("DJ:", dj);
-    console.log("Instagram:", instagram);
-    console.log("Comentario:", comment);
-    console.log("Monto:", amount);
-    console.log("===========================");
-
     if (!amount || !dj) {
       return NextResponse.json(
         {
@@ -63,34 +56,29 @@ export async function POST(req: Request) {
 
     const preference = new Preference(client);
 
-    const response =
-      await preference.create({
-        body: {
-          items: [
-            {
-              id: "DJPAY",
-              title: `Apoyo para ${dj}`,
-              quantity: 1,
-              unit_price: Number(amount),
-              currency_id: "CLP",
-            },
-          ],
-
-          back_urls: {
-            success: "https://djpay.cl",
-            failure: "https://djpay.cl",
-            pending: "https://djpay.cl",
+    const response = await preference.create({
+      body: {
+        items: [
+          {
+            id: "DJPAY",
+            title: `Apoyo para ${dj}`,
+            quantity: 1,
+            unit_price: Number(amount),
+            currency_id: "CLP",
           },
+        ],
 
-          auto_return: "approved",
-
-          external_reference: `${dj}-${Date.now()}`,
+        back_urls: {
+          success: "https://djpay.cl",
+          failure: "https://djpay.cl",
+          pending: "https://djpay.cl",
         },
-      });
 
-    console.log("========== INIT POINT ==========");
-    console.log(response.init_point);
-    console.log("================================");
+        auto_return: "approved",
+
+        external_reference: `${dj}-${Date.now()}`,
+      },
+    });
 
     return NextResponse.json({
       success: true,
@@ -98,46 +86,14 @@ export async function POST(req: Request) {
       id: response.id,
     });
 
-  } catch (error: any) {
-
-    console.error("========== ERROR MP ==========");
+  } catch (error) {
+    console.error("ERROR MP:");
     console.error(error);
-
-    console.error(
-      "MESSAGE:",
-      error?.message
-    );
-
-    console.error(
-      "CAUSE:",
-      JSON.stringify(
-        error?.cause,
-        null,
-        2
-      )
-    );
-
-    console.error(
-      "STATUS:",
-      error?.status
-    );
-
-    console.error(
-      "RESPONSE:",
-      JSON.stringify(
-        error?.response,
-        null,
-        2
-      )
-    );
-
-    console.error("==============================");
 
     return NextResponse.json(
       {
         success: false,
-        error: error?.message || "Error desconocido",
-        details: error?.response || error,
+        error: "Error creando preferencia",
       },
       { status: 500 }
     );

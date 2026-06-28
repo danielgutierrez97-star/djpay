@@ -1,22 +1,29 @@
 import { NextResponse } from "next/server";
-import { neon } from "@neondatabase/serverless";
+import postgres from "postgres";
 
-const sql = neon(process.env.DATABASE_URL!);
+const sql = postgres(process.env.DATABASE_URL!);
 
-export async function POST(request: Request) {
+export async function GET(req: Request) {
   try {
-    const { query } = await request.json();
+    const { searchParams } = new URL(req.url);
+    const q = searchParams.get("q") || "";
+
+    if (!q) {
+      return NextResponse.json([]);
+    }
 
     const djs = await sql`
-      SELECT *
+      SELECT instagram, nombre
       FROM djs
       WHERE
-        instagram ILIKE ${"%" + query + "%"}
-        OR nombre ILIKE ${"%" + query + "%"}
-      LIMIT 10
+        instagram ILIKE ${"%" + q + "%"}
+        OR nombre ILIKE ${"%" + q + "%"}
+      ORDER BY nombre
+      LIMIT 5
     `;
 
     return NextResponse.json(djs);
+
   } catch (error) {
     console.error(error);
 
