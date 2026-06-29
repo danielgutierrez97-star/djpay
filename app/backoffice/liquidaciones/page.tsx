@@ -2,6 +2,8 @@ import { neon } from "@neondatabase/serverless";
 import Image from "next/image";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 const sql = neon(process.env.DATABASE_URL!);
 
 export default async function LiquidacionesPage() {
@@ -41,7 +43,14 @@ export default async function LiquidacionesPage() {
 
           <Link
             href="/backoffice"
-            className="bg-violet-600 text-white px-5 py-3 rounded-xl font-bold"
+            className="
+              bg-violet-600
+              text-white
+              px-5
+              py-3
+              rounded-xl
+              font-bold
+            "
           >
             ← Volver
           </Link>
@@ -50,64 +59,88 @@ export default async function LiquidacionesPage() {
 
         <div className="border-2 border-black rounded-3xl overflow-hidden shadow-2xl">
 
-          <table className="w-full">
+          {liquidaciones.length === 0 ? (
 
-            <thead className="bg-violet-600 text-white">
+            <div className="p-16 text-center">
 
-              <tr>
-                <th className="text-left p-5">
-                  DJ
-                </th>
+              <p className="text-2xl font-bold mb-2">
+                No hay liquidaciones
+              </p>
 
-                <th className="text-left p-5">
-                  Monto bruto
-                </th>
+              <p className="text-neutral-500">
+                Cuando realices transferencias a los DJs,
+                aparecerán aquí.
+              </p>
 
-                <th className="text-left p-5">
-                  Propinas
-                </th>
+            </div>
 
-                <th className="text-left p-5">
-                  Fecha
-                </th>
-              </tr>
+          ) : (
 
-            </thead>
+            <table className="w-full">
 
-            <tbody>
+              <thead className="bg-violet-600 text-white">
 
-              {liquidaciones.map((item: any) => (
-                <tr
-                  key={item.id}
-                  className="border-t"
-                >
-                  <td className="p-5 font-bold">
-                    @{item.dj}
-                  </td>
+                <tr>
 
-                  <td className="p-5 text-green-600 font-bold">
-                    $
-                    {Number(item.monto).toLocaleString(
-                      "es-CL"
-                    )}
-                  </td>
+                  <th className="text-left p-5">
+                    DJ
+                  </th>
 
-                  <td className="p-5">
-                    {item.cantidad_propinas}
-                  </td>
+                  <th className="text-left p-5">
+                    Monto bruto
+                  </th>
 
-                  <td className="p-5">
-                    {new Date(
-                      item.created_at
-                    ).toLocaleString("es-CL")}
-                  </td>
+                  <th className="text-left p-5">
+                    Propinas
+                  </th>
+
+                  <th className="text-left p-5">
+                    Fecha
+                  </th>
 
                 </tr>
-              ))}
 
-            </tbody>
+              </thead>
 
-          </table>
+              <tbody>
+
+                {liquidaciones.map((item: any) => (
+
+                  <tr
+                    key={item.id}
+                    className="border-t"
+                  >
+
+                    <td className="p-5 font-bold">
+                      @{item.dj}
+                    </td>
+
+                    <td className="p-5 text-green-600 font-bold">
+                      $
+                      {Number(item.monto).toLocaleString(
+                        "es-CL"
+                      )}
+                    </td>
+
+                    <td className="p-5">
+                      {item.cantidad_propinas}
+                    </td>
+
+                    <td className="p-5">
+                      {new Date(
+                        item.created_at
+                      ).toLocaleString("es-CL")}
+                    </td>
+
+                  </tr>
+
+                ))}
+
+              </tbody>
+
+            </table>
+
+          )}
 
         </div>
 
