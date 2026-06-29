@@ -5,6 +5,8 @@ import LiquidarDJButton from "@/components/LiquidarDJButton";
 import DeshacerUltimaLiquidacionButton from "@/components/DeshacerUltimaLiquidacionButton";
 import LogoutButton from "@/components/LogoutButton";
 
+export const dynamic = "force-dynamic";
+
 const sql = neon(process.env.DATABASE_URL!);
 
 export default async function AdminHome() {

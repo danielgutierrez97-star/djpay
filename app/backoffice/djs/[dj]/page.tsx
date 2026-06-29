@@ -2,6 +2,8 @@ import { neon } from "@neondatabase/serverless";
 import Image from "next/image";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 const sql = neon(process.env.DATABASE_URL!);
 
 export default async function AdminHome() {
