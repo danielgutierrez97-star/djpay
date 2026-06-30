@@ -61,15 +61,15 @@ export async function POST(req: Request) {
         ],
 
         back_urls: {
-          success: "https://djpay.cl",
-          failure: "https://djpay.cl",
-          pending: "https://djpay.cl",
+          success: "https://www.djpay.cl",
+          failure: "https://www.djpay.cl",
+          pending: "https://www.djpay.cl",
         },
 
         auto_return: "approved",
 
         notification_url:
-          "https://djpay.cl/api/mp/webhook",
+          "https://www.djpay.cl/api/mp/webhook",
 
         external_reference: `${dj}-${Date.now()}`,
 
