@@ -1,12 +1,15 @@
 import { neon } from "@neondatabase/serverless";
 import Image from "next/image";
 import Link from "next/link";
+import { requireAdmin } from "@/lib/requireAdmin";
 
 export const dynamic = "force-dynamic";
 
 const sql = neon(process.env.DATABASE_URL!);
 
 export default async function LiquidacionesPage() {
+  await requireAdmin();
+
   const liquidaciones = await sql`
     SELECT *
     FROM liquidaciones

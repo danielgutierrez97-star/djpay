@@ -4,12 +4,15 @@ import Link from "next/link";
 import LiquidarDJButton from "@/components/LiquidarDJButton";
 import DeshacerUltimaLiquidacionButton from "@/components/DeshacerUltimaLiquidacionButton";
 import LogoutButton from "@/components/LogoutButton";
+import { requireAdmin } from "@/lib/requireAdmin";
 
 export const dynamic = "force-dynamic";
 
 const sql = neon(process.env.DATABASE_URL!);
 
 export default async function AdminHome() {
+  await requireAdmin();
+
   const tips = await sql`
     SELECT *
     FROM tips
@@ -62,8 +65,8 @@ export default async function AdminHome() {
     item.total += Number(tip.monto);
     item.propinas += 1;
 
-    if (!tip.pagado) {
-      item.pendiente += Number(tip.monto);
+    if (!tip.liquidado) {
+      item.pendiente += Number(tip.neto_dj || 0);
     }
   });
 
@@ -84,7 +87,9 @@ export default async function AdminHome() {
       <div className="max-w-7xl mx-auto">
 
         <div className="flex items-center justify-between mb-10">
+
           <div className="flex items-center gap-4">
+
             <Image
               src="/logo.png"
               alt="DJPAY"
@@ -101,9 +106,44 @@ export default async function AdminHome() {
                 Panel de administración
               </p>
             </div>
+
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
+
+            <Link
+              href="/backoffice/pagos"
+              className="
+                border
+                border-black
+                rounded-xl
+                px-4
+                py-2
+                text-sm
+                font-medium
+                hover:bg-violet-50
+                transition
+              "
+            >
+              💸 Pagos
+            </Link>
+
+            <Link
+              href="/backoffice/djs"
+              className="
+                border
+                border-black
+                rounded-xl
+                px-4
+                py-2
+                text-sm
+                font-medium
+                hover:bg-violet-50
+                transition
+              "
+            >
+              🎧 DJs
+            </Link>
 
             <Link
               href="/backoffice/liquidaciones"
@@ -119,7 +159,7 @@ export default async function AdminHome() {
                 transition
               "
             >
-              Historial
+              🏦 Liquidaciones
             </Link>
 
             <Link
@@ -144,6 +184,7 @@ export default async function AdminHome() {
             <LogoutButton />
 
           </div>
+
         </div>
 
         <div className="grid md:grid-cols-3 gap-4 mb-10">
@@ -257,7 +298,7 @@ export default async function AdminHome() {
                         transition
                       "
                     >
-                      Ver
+                      ✏️ Editar DJ
                     </Link>
 
                     {dj.pendiente > 0 ? (

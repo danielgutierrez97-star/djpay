@@ -11,9 +11,13 @@ export async function GET(
     const { dj } = await params;
 
     const result = await sql`
-      SELECT *
+      SELECT
+        nombre,
+        instagram,
+        activo
       FROM djs
       WHERE instagram = ${dj}
+      AND activo = true
       LIMIT 1
     `;
 
@@ -31,6 +35,7 @@ export async function GET(
       success: true,
       dj: result[0],
     });
+
   } catch (error) {
     console.error(error);
 

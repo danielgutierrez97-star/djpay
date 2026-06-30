@@ -5,12 +5,15 @@ import LogoutButton from "@/components/LogoutButton";
 import AprobarDJButton from "@/components/AprobarDJButton";
 import EliminarDJButton from "@/components/EliminarDJButton";
 import VerificarInstagramButton from "@/components/VerificarInstagramButton";
+import { requireAdmin } from "@/lib/requireAdmin";
 
 export const dynamic = "force-dynamic";
 
 const sql = neon(process.env.DATABASE_URL!);
 
 export default async function SolicitudesPage() {
+  await requireAdmin();
+
   const solicitudes = await sql`
     SELECT *
     FROM djs

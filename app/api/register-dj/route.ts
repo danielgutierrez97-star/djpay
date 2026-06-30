@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 
 const sql = neon(process.env.DATABASE_URL!);
 
+const COMISION_DJPAY = 12;
+
 function generarToken() {
   return crypto.randomUUID();
 }
@@ -26,7 +28,6 @@ export async function POST(request: Request) {
       tipo_cuenta,
       numero_cuenta,
       tipo_liquidacion,
-      comision,
     } = await request.json();
 
     if (
@@ -91,7 +92,7 @@ export async function POST(request: Request) {
         ${tipo_cuenta},
         ${numero_cuenta},
         ${tipo_liquidacion || "TRANSFERENCIA"},
-        ${comision || 12},
+        ${COMISION_DJPAY},
         ${codigoVerificacion},
         false,
         ${passwordHash},

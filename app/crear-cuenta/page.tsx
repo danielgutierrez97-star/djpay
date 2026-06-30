@@ -65,7 +65,7 @@ export default function CrearCuenta() {
     setForm({
       ...form,
       tipo_liquidacion: tipo,
-      comision: tipo === "MERCADOPAGO" ? 11 : 12,
+      comision: 12,
       banco:
         tipo === "MERCADOPAGO"
           ? "Mercado Pago"
@@ -158,7 +158,7 @@ export default function CrearCuenta() {
               />
 
               <span>
-                Transferencia bancaria (12% comisión)
+                Transferencia bancaria
               </span>
             </label>
 
@@ -175,7 +175,7 @@ export default function CrearCuenta() {
               />
 
               <span>
-                Mercado Pago (11% comisión)
+                Mercado Pago
               </span>
             </label>
           </div>

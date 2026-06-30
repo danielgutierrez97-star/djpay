@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { neon } from "@neondatabase/serverless";
+import { requireAdmin } from "@/lib/requireAdmin";
 
 const sql = neon(process.env.DATABASE_URL!);
 
 export async function POST(request: Request) {
   try {
+    await requireAdmin();
+
     const { djId } = await request.json();
 
     if (!djId) {

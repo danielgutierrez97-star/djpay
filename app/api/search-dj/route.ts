@@ -6,7 +6,7 @@ const sql = postgres(process.env.DATABASE_URL!);
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const q = searchParams.get("q") || "";
+    const q = searchParams.get("q")?.trim() || "";
 
     if (!q) {
       return NextResponse.json([]);
@@ -15,9 +15,11 @@ export async function GET(req: Request) {
     const djs = await sql`
       SELECT instagram, nombre
       FROM djs
-      WHERE
+      WHERE activo = true
+      AND (
         instagram ILIKE ${"%" + q + "%"}
         OR nombre ILIKE ${"%" + q + "%"}
+      )
       ORDER BY nombre
       LIMIT 5
     `;

@@ -10,6 +10,8 @@ const paymentClient = new Payment(client);
 
 const sql = postgres(process.env.DATABASE_URL!);
 
+const COMISION_DJPAY = 0.12;
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -34,7 +36,10 @@ export async function POST(req: Request) {
     console.log("PAGO:", payment);
 
     if ((payment as any).status !== "approved") {
-      console.log("Pago no aprobado:", (payment as any).status);
+      console.log(
+        "Pago no aprobado:",
+        (payment as any).status
+      );
 
       return NextResponse.json({ ok: true });
     }
@@ -53,7 +58,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: true });
     }
 
-    const metadata = (payment as any).metadata || {};
+    const metadata =
+      (payment as any).metadata || {};
+
+    const monto =
+      Number(
+        (payment as any)
+          .transaction_amount
+      ) || 0;
+
+    // Comisión oficial DJPay: 12%
+    const comision =
+      Math.round(monto * COMISION_DJPAY);
+
+    const netoDj =
+      monto - comision;
 
     await sql`
       INSERT INTO tips (
@@ -61,6 +80,8 @@ export async function POST(req: Request) {
         instagram,
         comentario,
         monto,
+        comision,
+        neto_dj,
         estado,
         payment_id,
         fecha_pago,
@@ -70,7 +91,9 @@ export async function POST(req: Request) {
         ${metadata.dj || ""},
         ${metadata.instagram || ""},
         ${metadata.comment || ""},
-        ${(payment as any).transaction_amount || 0},
+        ${monto},
+        ${comision},
+        ${netoDj},
         'approved',
         ${(payment as any).id},
         NOW(),
@@ -78,7 +101,9 @@ export async function POST(req: Request) {
       )
     `;
 
-    console.log("TIP GUARDADA CORRECTAMENTE");
+    console.log(
+      "TIP GUARDADA CORRECTAMENTE"
+    );
 
     return NextResponse.json({
       success: true,

@@ -47,10 +47,10 @@ export default async function DashboardPage() {
   );
 
   const pendiente = tips
-    .filter((tip: any) => !tip.pagado)
+    .filter((tip: any) => !tip.liquidado)
     .reduce(
       (sum: number, tip: any) =>
-        sum + Number(tip.monto),
+        sum + Number(tip.neto_dj || 0),
       0
     );
 

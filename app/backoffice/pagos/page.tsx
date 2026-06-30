@@ -1,69 +1,37 @@
 import { neon } from "@neondatabase/serverless";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import DJEditor from "@/components/DJEditor";
+import PagosTable from "@/components/PagosTable";
 import { requireAdmin } from "@/lib/requireAdmin";
 
 export const dynamic = "force-dynamic";
 
 const sql = neon(process.env.DATABASE_URL!);
 
-export default async function DJPage({
-  params,
-}: {
-  params: Promise<{
-    dj: string;
-  }>;
-}) {
+export default async function PagosPage() {
   await requireAdmin();
 
-  const { dj } = await params;
-
-  const djs = await sql`
-    SELECT *
-    FROM djs
-    WHERE instagram = ${dj}
-    LIMIT 1
-  `;
-
-  if (djs.length === 0) {
-    notFound();
-  }
-
-  const data = djs[0];
-
-  const tips = await sql`
+  const pagos = await sql`
     SELECT *
     FROM tips
-    WHERE dj = ${dj}
     ORDER BY created_at DESC
   `;
 
-  const liquidaciones = await sql`
-    SELECT *
-    FROM liquidaciones
-    WHERE dj = ${dj}
-    ORDER BY created_at DESC
-  `;
-
-  const total = tips.reduce(
-    (sum: number, tip: any) =>
-      sum + Number(tip.monto),
+  const totalBruto = pagos.reduce(
+    (sum: number, pago: any) =>
+      sum + Number(pago.monto || 0),
     0
   );
 
-  const pendiente = tips
-    .filter((tip: any) => !tip.liquidado)
-    .reduce(
-      (sum: number, tip: any) =>
-        sum + Number(tip.neto_dj || 0),
-      0
-    );
+  const totalComisiones = pagos.reduce(
+    (sum: number, pago: any) =>
+      sum + Number(pago.comision || 0),
+    0
+  );
 
-  const totalLiquidado = liquidaciones.reduce(
-    (sum: number, item: any) =>
-      sum + Number(item.monto),
+  const totalNeto = pagos.reduce(
+    (sum: number, pago: any) =>
+      sum + Number(pago.neto_dj || 0),
     0
   );
 
@@ -72,7 +40,7 @@ export default async function DJPage({
 
       <div className="max-w-7xl mx-auto">
 
-        <div className="flex items-center justify-between mb-10">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10">
 
           <div className="flex items-center gap-4">
 
@@ -85,12 +53,12 @@ export default async function DJPage({
 
             <div>
 
-              <h1 className="text-3xl font-semibold">
-                @{data.instagram}
+              <h1 className="text-3xl font-semibold tracking-tight">
+                Pagos
               </h1>
 
-              <p className="text-neutral-500">
-                Gestión completa del DJ
+              <p className="text-sm text-neutral-500">
+                Historial financiero completo
               </p>
 
             </div>
@@ -98,16 +66,18 @@ export default async function DJPage({
           </div>
 
           <Link
-            href="/backoffice/djs"
+            href="/backoffice"
             className="
               border
               border-black
               rounded-xl
               px-5
               py-3
+              text-sm
               font-medium
               hover:bg-violet-50
               transition
+              w-fit
             "
           >
             ← Volver
@@ -120,12 +90,12 @@ export default async function DJPage({
           <div className="border border-black rounded-3xl p-6 shadow-lg">
 
             <p className="text-sm text-neutral-500">
-              Total recibido
+              Total bruto
             </p>
 
             <p className="text-3xl font-semibold text-violet-600">
               $
-              {total.toLocaleString("es-CL")}
+              {totalBruto.toLocaleString("es-CL")}
             </p>
 
           </div>
@@ -133,12 +103,12 @@ export default async function DJPage({
           <div className="border border-black rounded-3xl p-6 shadow-lg">
 
             <p className="text-sm text-neutral-500">
-              Pendiente
+              Comisiones DJPay
             </p>
 
-            <p className="text-3xl font-semibold text-violet-600">
+            <p className="text-3xl font-semibold text-red-500">
               $
-              {pendiente.toLocaleString("es-CL")}
+              {totalComisiones.toLocaleString("es-CL")}
             </p>
 
           </div>
@@ -146,21 +116,19 @@ export default async function DJPage({
           <div className="border border-black rounded-3xl p-6 shadow-lg">
 
             <p className="text-sm text-neutral-500">
-              Total liquidado
+              Neto DJs
             </p>
 
             <p className="text-3xl font-semibold text-green-600">
               $
-              {totalLiquidado.toLocaleString(
-                "es-CL"
-              )}
+              {totalNeto.toLocaleString("es-CL")}
             </p>
 
           </div>
 
         </div>
 
-        <DJEditor dj={data} />
+        <PagosTable pagos={pagos} />
 
       </div>
 

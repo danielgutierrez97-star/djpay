@@ -8,12 +8,6 @@ const client = new MercadoPagoConfig({
 export async function GET() {
   return NextResponse.json({
     status: "ok",
-    tokenExiste: !!process.env.MERCADOPAGO_ACCESS_TOKEN,
-    token:
-      process.env.MERCADOPAGO_ACCESS_TOKEN?.substring(
-        0,
-        20
-      ),
   });
 }
 
@@ -36,6 +30,22 @@ export async function POST(req: Request) {
       );
     }
 
+    const monto = Number(amount);
+
+    if (
+      Number.isNaN(monto) ||
+      monto < 1000 ||
+      monto > 100000
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Monto inválido",
+        },
+        { status: 400 }
+      );
+    }
+
     const preference = new Preference(client);
 
     const response = await preference.create({
@@ -45,7 +55,7 @@ export async function POST(req: Request) {
             id: "DJPAY",
             title: `Apoyo para ${dj}`,
             quantity: 1,
-            unit_price: Number(amount),
+            unit_price: monto,
             currency_id: "CLP",
           },
         ],
@@ -57,6 +67,9 @@ export async function POST(req: Request) {
         },
 
         auto_return: "approved",
+
+        notification_url:
+          "https://djpay.cl/api/mp/webhook",
 
         external_reference: `${dj}-${Date.now()}`,
 

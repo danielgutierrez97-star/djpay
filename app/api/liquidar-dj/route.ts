@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { neon } from "@neondatabase/serverless";
+import { requireAdmin } from "@/lib/requireAdmin";
 
 const sql = neon(process.env.DATABASE_URL!);
 
 export async function POST(req: Request) {
   try {
+    await requireAdmin();
+
     const { dj } = await req.json();
 
     if (!dj) {
@@ -23,7 +26,7 @@ export async function POST(req: Request) {
       SELECT *
       FROM tips
       WHERE dj = ${dj}
-      AND pagado = false
+      AND liquidado = false
       ORDER BY created_at ASC
     `;
 
@@ -39,9 +42,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const montoBruto = tipsPendientes.reduce(
+    const montoNetoDj = tipsPendientes.reduce(
       (sum: number, tip: any) =>
-        sum + Number(tip.monto),
+        sum + Number(tip.neto_dj || 0),
       0
     );
 
@@ -58,7 +61,7 @@ export async function POST(req: Request) {
       )
       VALUES (
         ${dj},
-        ${montoBruto},
+        ${montoNetoDj},
         ${tipsPendientes.length},
         ${JSON.stringify(tipIds)}
       )
@@ -66,7 +69,7 @@ export async function POST(req: Request) {
 
     await sql`
       UPDATE tips
-      SET pagado = true
+      SET liquidado = true
       WHERE id = ANY(${tipIds})
     `;
 

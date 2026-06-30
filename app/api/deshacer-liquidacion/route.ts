@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { neon } from "@neondatabase/serverless";
+import { requireAdmin } from "@/lib/requireAdmin";
 
 const sql = neon(process.env.DATABASE_URL!);
 
 export async function POST(req: Request) {
   try {
+    await requireAdmin();
+
     const { id } = await req.json();
 
     if (!id) {
@@ -54,7 +57,7 @@ export async function POST(req: Request) {
 
     await sql`
       UPDATE tips
-      SET pagado = false
+      SET liquidado = false
       WHERE id = ANY(${tipIds})
     `;
 
