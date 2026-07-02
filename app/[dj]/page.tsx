@@ -266,7 +266,91 @@ export default function DJPage({
 
         </div>
 
-        <div className="mb-5">
+
+
+        <div
+          className="
+            mt-6
+            border-2
+            border-black
+            rounded-3xl
+            p-7
+            bg-white
+            min-h-[170px]
+            flex
+            flex-col
+            justify-center
+            text-center
+            shadow-lg
+            shadow-violet-100
+          ">
+                     <p
+            className="
+              font-bold
+              text-sm
+              tracking-widest
+              text-black
+              mb-6
+            "
+          >
+            💜 FAN DESTACADO
+          </p>
+
+          {fanDestacado ? (
+            <>
+              <p
+                className="
+                  text-lg
+                  font-semibold
+                  text-black
+                  mb-5
+                  break-all
+                "
+              >
+                @{fanDestacado.instagram}
+              </p>
+
+              <p
+                className="
+                  text-neutral-700
+                  text-lg
+                  leading-relaxed
+                  px-3
+                "
+              >
+                {fanDestacado.comentario}
+              </p>
+            </>
+          ) : (
+            <>
+              <p
+                className="
+                  text-xl
+                  font-bold
+                  mb-4
+                "
+              >
+                ⭐ Sé el fan destacado
+              </p>
+
+              <p
+                className="
+                  text-4xl
+                  font-black
+                  text-violet-600
+                "
+              >
+                $10.000
+              </p>
+            </>
+          )}
+
+        </div>
+                <ComentariosCarousel
+          comentarios={comentarios}
+        />
+
+        <div className="mb-5 mt-10">
 
           <label className="block mb-2 font-medium">
             Tu Instagram
@@ -377,90 +461,6 @@ export default function DJPage({
         >
           ENVIAR APOYO
         </button>
-
-        <div
-          className="
-            mt-6
-            border-2
-            border-black
-            rounded-3xl
-            p-7
-            bg-white
-            min-h-[170px]
-            flex
-            flex-col
-            justify-center
-            text-center
-            shadow-lg
-            shadow-violet-100
-          "
-        >
-          <p
-            className="
-              font-bold
-              text-sm
-              tracking-widest
-              text-black
-              mb-6
-            "
-          >
-            💜 FAN DESTACADO
-          </p>
-
-          {fanDestacado ? (
-            <>
-              <p
-                className="
-                  text-lg
-                  font-semibold
-                  text-black
-                  mb-5
-                  break-all
-                "
-              >
-                @{fanDestacado.instagram}
-              </p>
-
-              <p
-                className="
-                  text-neutral-700
-                  text-lg
-                  leading-relaxed
-                  px-3
-                "
-              >
-                {fanDestacado.comentario}
-              </p>
-            </>
-          ) : (
-            <>
-              <p
-                className="
-                  text-xl
-                  font-bold
-                  mb-4
-                "
-              >
-                ⭐ Sé el fan destacado
-              </p>
-
-              <p
-                className="
-                  text-4xl
-                  font-black
-                  text-violet-600
-                "
-              >
-                $10.000
-              </p>
-            </>
-          )}
-
-        </div>
-
-        <ComentariosCarousel
-          comentarios={comentarios}
-        />
 
       </div>
     </main>
