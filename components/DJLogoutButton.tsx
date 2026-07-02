@@ -2,7 +2,13 @@
 
 import { useRouter } from "next/navigation";
 
-export default function DJLogoutButton() {
+interface DJLogoutButtonProps {
+  variant?: "default" | "compact";
+}
+
+export default function DJLogoutButton({
+  variant = "default",
+}: DJLogoutButtonProps) {
   const router = useRouter();
 
   async function logout() {
@@ -12,6 +18,28 @@ export default function DJLogoutButton() {
 
     router.push("/login");
     router.refresh();
+  }
+
+  if (variant === "compact") {
+    return (
+      <button
+        onClick={logout}
+        className="
+          border-2
+          border-black
+          rounded-xl
+          px-4
+          py-2
+          text-sm
+          font-medium
+          text-black
+          hover:bg-gray-100
+          transition
+        "
+      >
+        Salir
+      </button>
+    );
   }
 
   return (

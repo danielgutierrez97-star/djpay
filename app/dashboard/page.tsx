@@ -4,8 +4,8 @@ import { neon } from "@neondatabase/serverless";
 import Image from "next/image";
 import Link from "next/link";
 
-import CopyLinkButton from "@/components/CopyLinkButton";
 import DJLogoutButton from "@/components/DJLogoutButton";
+import DJAvatar from "@/components/DJAvatar";
 
 export const dynamic = "force-dynamic";
 
@@ -54,122 +54,164 @@ export default async function DashboardPage() {
       0
     );
 
-  const link = `https://djpay.cl/${dj.instagram}`;
+  const ultimasPropinas = [...tips]
+    .sort(
+      (a: any, b: any) =>
+        new Date(b.created_at).getTime() -
+        new Date(a.created_at).getTime()
+    )
+    .slice(0, 3);
+
+  const link = `djpay.cl/${dj.instagram}`;
 
   return (
     <main className="min-h-screen bg-white p-6">
       <div className="max-w-md mx-auto border-4 border-black rounded-3xl shadow-2xl p-8">
 
-        <div className="flex justify-center mb-6">
+        <div className="flex items-center justify-between">
+
           <Image
             src="/logo.png"
             alt="DJPay"
-            width={100}
-            height={100}
+            width={70}
+            height={70}
           />
+
+          <DJLogoutButton variant="compact" />
+
         </div>
 
-        <h1 className="text-3xl font-bold text-center text-black">
-          Hola, {dj.nombre} 👋
-        </h1>
+        <div className="mt-2 flex flex-col items-center">
 
-        <p className="text-center text-gray-600 mt-2">
-          Tu panel DJPay
-        </p>
+          <DJAvatar
+            foto={dj.foto_perfil}
+            nombre={dj.nombre}
+            size={88}
+          />
 
-        <div className="mt-8 border-2 border-black rounded-2xl p-4">
+          <h1 className="mt-6 text-3xl font-bold text-black text-center">
+            Hola, {dj.nombre} 👋
+          </h1>
 
-          <p className="font-bold text-black mb-2">
-            Tu link DJPay
+          <p className="text-gray-600 mt-2 text-center">
+            Tu panel DJPay
           </p>
 
-          <p className="text-violet-600 break-all mb-4">
+        </div>
+
+        <div className="mt-8 grid grid-cols-2 gap-4">
+
+          <Link
+            href="/dashboard/propinas"
+            className="
+              border-2
+              border-black
+              rounded-2xl
+              p-4
+              text-center
+              font-semibold
+              text-black
+              hover:bg-gray-50
+              transition
+            "
+          >
+            💜 Propinas
+          </Link>
+
+          <Link
+            href="/dashboard/perfil"
+            className="
+              border-2
+              border-black
+              rounded-2xl
+              p-4
+              text-center
+              font-semibold
+              text-black
+              hover:bg-gray-50
+              transition
+            "
+          >
+            ⚙️ Mi perfil
+          </Link>
+
+        </div>
+
+        <div className="mt-6 border-2 border-black rounded-2xl p-4">
+
+          <p className="font-bold text-black mb-2">
+            🔗 Mi DJPay
+          </p>
+
+          <p className="text-violet-600 break-all">
             {link}
           </p>
 
-          <div className="space-y-3">
+        </div>
 
-            <CopyLinkButton
-              link={link}
-            />
+        <div className="mt-6 border-2 border-black rounded-2xl p-4">
 
-            <Link
-              href={`/${dj.instagram}`}
-              target="_blank"
-              className="
-                block
-                w-full
-                text-center
-                bg-black
-                text-white
-                border-2
-                border-black
-                rounded-2xl
-                p-4
-                font-bold
-                hover:opacity-90
-                transition
-              "
-            >
-              🎧 Ver mi DJPay
-            </Link>
+          <p className="text-gray-500">
+            Total generado
+          </p>
 
-          </div>
+          <p className="text-2xl font-bold text-violet-600 mt-1">
+            $
+            {total.toLocaleString("es-CL")}
+          </p>
+
+          <p className="text-sm text-gray-600 mt-2">
+            {tips.length} propinas · $
+            {pendiente.toLocaleString("es-CL")} por
+            liquidar
+          </p>
 
         </div>
 
-        <div className="mt-6 space-y-4">
+        <div className="mt-6 border-2 border-black rounded-2xl p-4">
 
-          <div className="border-2 border-black rounded-2xl p-4">
-            <p className="text-gray-500">
-              Propinas recibidas
+          <p className="font-bold text-black mb-4">
+            Últimas propinas
+          </p>
+
+          {ultimasPropinas.length === 0 && (
+            <p className="text-sm text-gray-500">
+              Aún no has recibido propinas 💜
             </p>
+          )}
 
-            <p className="text-3xl font-bold text-black">
-              {tips.length}
-            </p>
-          </div>
+          {ultimasPropinas.map(
+            (tip: any, index: number) => (
+              <div key={tip.id}>
 
-          <div className="border-2 border-black rounded-2xl p-4">
-            <p className="text-gray-500">
-              Total generado
-            </p>
+                <p className="font-medium text-black">
+                  💜 Anónimo · +
+                  ${tip.monto.toLocaleString("es-CL")}
+                </p>
 
-            <p className="text-3xl font-bold text-violet-600">
-              $
-              {total.toLocaleString(
-                "es-CL"
-              )}
-            </p>
-          </div>
+                {tip.comentario && (
+                  <p className="mt-1 italic text-gray-700">
+                    "{tip.comentario}"
+                  </p>
+                )}
 
-          <div className="border-2 border-black rounded-2xl p-4">
-            <p className="text-gray-500">
-              Pendiente por liquidar
-            </p>
+                <p className="mt-2 text-sm text-gray-500">
+                  {new Date(
+                    tip.created_at
+                  ).toLocaleDateString(
+                    "es-CL"
+                  )}
+                </p>
 
-            <p className="text-3xl font-bold text-violet-600">
-              $
-              {pendiente.toLocaleString(
-                "es-CL"
-              )}
-            </p>
-          </div>
+                {index <
+                  ultimasPropinas.length - 1 && (
+                  <hr className="my-4 border-gray-200" />
+                )}
 
-          <div className="border-2 border-black rounded-2xl p-4">
-            <p className="text-gray-500">
-              Método de cobro
-            </p>
+              </div>
+            )
+          )}
 
-            <p className="text-xl font-bold text-black">
-              {dj.tipo_liquidacion}
-            </p>
-          </div>
-
-        </div>
-
-        <div className="mt-6">
-          <DJLogoutButton />
         </div>
 
       </div>

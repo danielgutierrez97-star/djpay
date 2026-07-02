@@ -14,7 +14,8 @@ export async function GET(
       SELECT
         nombre,
         instagram,
-        activo
+        activo,
+        foto_perfil
       FROM djs
       WHERE instagram = ${dj}
       AND activo = true
