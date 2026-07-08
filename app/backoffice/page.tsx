@@ -35,6 +35,15 @@ export default async function AdminHome() {
     solicitudesPendientes[0].total
   );
 
+  const totalDjsRegistrados = await sql`
+    SELECT COUNT(*) as total
+    FROM djs
+  `;
+
+  const totalDjs = Number(
+    totalDjsRegistrados[0].total
+  );
+
   const ultimaLiquidacionMap = new Map();
 
   liquidaciones.forEach((liquidacion: any) => {
@@ -217,7 +226,7 @@ export default async function AdminHome() {
             </p>
 
             <p className="text-3xl font-semibold">
-              {djs.length}
+              {totalDjs}
             </p>
           </div>
 
@@ -253,9 +262,8 @@ export default async function AdminHome() {
 
             </thead>
 
-            <tbody>
-
-              {djs.map((dj: any) => (
+            <tbody> 
+                            {djs.map((dj: any) => (
                 <tr
                   key={dj.nombre}
                   className="border-t"
