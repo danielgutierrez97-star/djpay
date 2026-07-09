@@ -61,9 +61,9 @@ export async function POST(req: Request) {
         ],
 
         back_urls: {
-          success: "https://www.djpay.cl",
-          failure: "https://www.djpay.cl",
-          pending: "https://www.djpay.cl",
+          success: `https://www.djpay.cl/pago-exitoso?dj=${encodeURIComponent(dj)}`,
+          failure: `https://www.djpay.cl/${encodeURIComponent(dj)}`,
+          pending: `https://www.djpay.cl/${encodeURIComponent(dj)}`,
         },
 
         auto_return: "approved",

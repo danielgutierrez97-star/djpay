@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { MercadoPagoConfig, Payment } from "mercadopago";
 import postgres from "postgres";
+import { enviarCorreoNuevoApoyo } from "@/lib/enviarCorreoNuevoApoyo";
 
 const client = new MercadoPagoConfig({
   accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN!,
@@ -104,6 +105,39 @@ export async function POST(req: Request) {
     console.log(
       "TIP GUARDADA CORRECTAMENTE"
     );
+
+    // Buscar datos del DJ
+    const djs = await sql`
+      SELECT nombre, email
+      FROM djs
+      WHERE instagram = ${metadata.dj || ""}
+      LIMIT 1
+    `;
+
+    if (
+      djs.length > 0 &&
+      djs[0].email &&
+      djs[0].email.trim() !== ""
+    ) {
+      try {
+        await enviarCorreoNuevoApoyo({
+          nombre: djs[0].nombre,
+          email: djs[0].email,
+          monto,
+          neto: netoDj,
+          comentario: metadata.comment || "",
+        });
+
+        console.log(
+          "Correo enviado correctamente"
+        );
+      } catch (error) {
+        console.error(
+          "Error enviando correo:"
+        );
+        console.error(error);
+      }
+    }
 
     return NextResponse.json({
       success: true,
