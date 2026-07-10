@@ -6,20 +6,22 @@ const sql = neon(process.env.DATABASE_URL!);
 
 export async function POST(request: Request) {
   try {
-    const { instagram, password } =
+    const { usuario, password } =
       await request.json();
 
     const djs = await sql`
       SELECT *
       FROM djs
-      WHERE instagram = ${instagram}
+      WHERE
+        LOWER(instagram) = LOWER(${usuario})
+        OR LOWER(email) = LOWER(${usuario})
       LIMIT 1
     `;
 
     if (djs.length === 0) {
       return NextResponse.json(
         {
-          error: "Instagram o contraseña incorrectos",
+          error: "Usuario o contraseña incorrectos",
         },
         {
           status: 401,
@@ -38,7 +40,7 @@ export async function POST(request: Request) {
     if (!validPassword) {
       return NextResponse.json(
         {
-          error: "Instagram o contraseña incorrectos",
+          error: "Usuario o contraseña incorrectos",
         },
         {
           status: 401,
@@ -70,13 +72,27 @@ export async function POST(request: Request) {
       );
     }
 
+    // Si por alguna razón el DJ no tiene session_token,
+    // se genera uno automáticamente.
+    let sessionToken = dj.session_token;
+
+    if (!sessionToken) {
+      sessionToken = crypto.randomUUID();
+
+      await sql`
+        UPDATE djs
+        SET session_token = ${sessionToken}
+        WHERE id = ${dj.id}
+      `;
+    }
+
     const response = NextResponse.json({
       success: true,
     });
 
     response.cookies.set(
       "dj_session",
-      dj.token_admin,
+      sessionToken,
       {
         httpOnly: true,
         secure:
@@ -84,7 +100,7 @@ export async function POST(request: Request) {
           "production",
         sameSite: "lax",
         path: "/",
-        maxAge: 60 * 60 * 24 * 30, // 30 días
+        maxAge: 60 * 60 * 24 * 30,
       }
     );
 
@@ -95,8 +111,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        error:
-          "Error interno del servidor",
+        error: "Error interno del servidor",
       },
       {
         status: 500,

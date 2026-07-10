@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     const djs = await sql`
       SELECT *
       FROM djs
-      WHERE token_admin = ${session}
+      WHERE session_token = ${session}
       LIMIT 1
     `;
 

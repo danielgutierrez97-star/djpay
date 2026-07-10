@@ -61,7 +61,7 @@ export async function POST(request: Request) {
       10
     );
 
-    const tokenAdmin = generarToken();
+    const sessionToken = generarToken();
 
     const codigoVerificacion =
       generarCodigoVerificacion();
@@ -80,7 +80,7 @@ export async function POST(request: Request) {
         codigo_verificacion,
         instagram_verificado,
         password_hash,
-        token_admin,
+        session_token,
         activo
       )
       VALUES (
@@ -96,7 +96,7 @@ export async function POST(request: Request) {
         ${codigoVerificacion},
         false,
         ${passwordHash},
-        ${tokenAdmin},
+        ${sessionToken},
         false
       )
     `;

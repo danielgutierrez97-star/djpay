@@ -24,7 +24,7 @@ export default async function PerfilPage() {
   const djs = await sql`
     SELECT *
     FROM djs
-    WHERE token_admin = ${session}
+    WHERE session_token = ${session}
     LIMIT 1
   `;
 

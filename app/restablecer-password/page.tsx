@@ -1,14 +1,16 @@
 "use client";
 
-import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function DJLoginPage() {
+function RestablecerPasswordContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [usuario, setUsuario] = useState("");
+  const token = searchParams.get("token");
+
   const [password, setPassword] = useState("");
+  const [confirmacion, setConfirmacion] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(
@@ -16,32 +18,49 @@ export default function DJLoginPage() {
   ) {
     e.preventDefault();
 
+    if (password !== confirmacion) {
+      alert("Las contraseñas no coinciden.");
+      return;
+    }
+
+    if (!token) {
+      alert("El enlace es inválido.");
+      return;
+    }
+
     setLoading(true);
 
-    const res = await fetch("/api/login-dj", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        usuario,
-        password,
-      }),
-    });
+    const res = await fetch(
+      "/api/restablecer-password",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token,
+          password,
+        }),
+      }
+    );
 
     setLoading(false);
 
     const data = await res.json();
 
-    if (res.ok) {
-      router.push("/dashboard");
+    if (!res.ok) {
+      alert(
+        data.error ||
+          "No fue posible cambiar la contraseña."
+      );
       return;
     }
 
     alert(
-      data.error ||
-        "Error al iniciar sesión"
+      "Tu contraseña fue actualizada correctamente."
     );
+
+    router.push("/login");
   }
 
   return (
@@ -57,24 +76,23 @@ export default function DJLoginPage() {
         </div>
 
         <h1 className="text-3xl font-bold text-center mb-2 text-black">
-          Ingresar a DJPay
+          Nueva contraseña
         </h1>
 
         <p className="text-center text-gray-700 mb-8">
-          Accede a tu panel de DJ
+          Crea una nueva contraseña para acceder a tu cuenta DJPay.
         </p>
 
         <form
           onSubmit={handleSubmit}
           className="space-y-5"
         >
-
           <input
-            type="text"
-            placeholder="Instagram o correo"
-            value={usuario}
+            type="password"
+            placeholder="Nueva contraseña"
+            value={password}
             onChange={(e) =>
-              setUsuario(e.target.value)
+              setPassword(e.target.value)
             }
             className="
               w-full
@@ -92,10 +110,10 @@ export default function DJLoginPage() {
 
           <input
             type="password"
-            placeholder="Contraseña"
-            value={password}
+            placeholder="Confirmar contraseña"
+            value={confirmacion}
             onChange={(e) =>
-              setPassword(e.target.value)
+              setConfirmacion(e.target.value)
             }
             className="
               w-full
@@ -123,30 +141,25 @@ export default function DJLoginPage() {
               font-bold
               hover:bg-violet-700
               transition
+              disabled:opacity-60
             "
           >
             {loading
-              ? "Ingresando..."
-              : "Ingresar"}
+              ? "Actualizando..."
+              : "Cambiar contraseña"}
           </button>
-
-          <div className="text-center pt-2">
-            <Link
-              href="/recuperar-password"
-              className="
-                text-sm
-                text-neutral-500
-                hover:text-violet-600
-                transition
-              "
-            >
-              ¿Olvidaste tu contraseña?
-            </Link>
-          </div>
 
         </form>
 
       </div>
     </main>
+  );
+}
+
+export default function RestablecerPasswordPage() {
+  return (
+    <Suspense fallback={null}>
+      <RestablecerPasswordContent />
+    </Suspense>
   );
 }
