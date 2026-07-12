@@ -14,8 +14,7 @@ const sql = neon(process.env.DATABASE_URL!);
 export default async function DashboardPage() {
   const cookieStore = await cookies();
 
-  const session =
-    cookieStore.get("dj_session")?.value;
+  const session = cookieStore.get("dj_session")?.value;
 
   if (!session) {
     redirect("/login");
@@ -41,8 +40,7 @@ export default async function DashboardPage() {
   `;
 
   const total = tips.reduce(
-    (sum: number, tip: any) =>
-      sum + Number(tip.monto),
+    (sum: number, tip: any) => sum + Number(tip.monto),
     0
   );
 
@@ -61,8 +59,6 @@ export default async function DashboardPage() {
         new Date(a.created_at).getTime()
     )
     .slice(0, 3);
-
-  const link = `djpay.cl/${dj.instagram}`;
 
   return (
     <main className="min-h-screen bg-white p-6">
@@ -137,15 +133,33 @@ export default async function DashboardPage() {
 
         </div>
 
-        <div className="mt-6 border-2 border-black rounded-2xl p-4">
+        <div className="mt-6 flex justify-center">
 
-          <p className="font-bold text-black mb-2">
-            🔗 Mi DJPay
-          </p>
+          <Link
+            href="/dashboard/mi-qr"
+            className="
+              w-56
+              flex
+              items-center
+              justify-center
+              gap-3
+              border-2
+              border-black
+              rounded-2xl
+              py-4
+              hover:bg-gray-50
+              transition
+            "
+          >
+            <span className="text-2xl text-violet-600">
+              ▣
+            </span>
 
-          <p className="text-violet-600 break-all">
-            {link}
-          </p>
+            <span className="font-bold text-black">
+              Mi QR
+            </span>
+
+          </Link>
 
         </div>
 

@@ -56,11 +56,9 @@ function RestablecerPasswordContent() {
       return;
     }
 
-    alert(
-      "Tu contraseña fue actualizada correctamente."
+    router.replace(
+      "/login?passwordReset=success"
     );
-
-    router.push("/login");
   }
 
   return (

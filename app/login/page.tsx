@@ -2,10 +2,14 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function DJLoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const passwordReset =
+    searchParams.get("passwordReset");
 
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
@@ -60,9 +64,31 @@ export default function DJLoginPage() {
           Ingresar a DJPay
         </h1>
 
-        <p className="text-center text-gray-700 mb-8">
+        <p className="text-center text-gray-700 mb-6">
           Accede a tu panel de DJ
         </p>
+
+        {passwordReset === "success" && (
+          <div
+            className="
+              mb-6
+              rounded-2xl
+              border-2
+              border-green-600
+              bg-green-50
+              p-4
+              text-center
+            "
+          >
+            <p className="font-semibold text-green-700">
+              ✅ Tu contraseña fue actualizada correctamente.
+            </p>
+
+            <p className="mt-1 text-sm text-green-700">
+              Ya puedes iniciar sesión con tu nueva contraseña.
+            </p>
+          </div>
+        )}
 
         <form
           onSubmit={handleSubmit}
