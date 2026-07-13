@@ -3,13 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import { toPng } from "html-to-image";
 
-import StoryPreview from "./StoryPreview";
+import StoryPreview, { type StoryTheme } from "./StoryPreview";
 
 interface StoryModalProps {
   open: boolean;
   onClose: () => void;
   qr: string;
 }
+
+const STORY_THEMES: StoryTheme[] = ["minimal","midnight", "aurora"];
 
 export default function StoryModal({
   open,
@@ -19,12 +21,28 @@ export default function StoryModal({
   const [message, setMessage] = useState(
     "APOYA LA MÚSICA"
   );
+  const [themeIndex, setThemeIndex] = useState(0);
   const [isExporting, setIsExporting] = useState(false);
   const [isStoryReady, setIsStoryReady] = useState(false);
   const [exportError, setExportError] = useState("");
 
   const storyRef = useRef<HTMLDivElement>(null);
   const warmUpPromiseRef = useRef<Promise<void> | null>(null);
+  const touchStartXRef = useRef<number | null>(null);
+  const mouseStartXRef = useRef<number | null>(null);
+  const theme = STORY_THEMES[themeIndex];
+
+  function handleTemplateSwipe(startX: number, endX: number) {
+    const distance = startX - endX;
+
+    if (Math.abs(distance) < 50) return;
+
+    const direction = distance > 0 ? 1 : -1;
+
+    setThemeIndex((currentIndex) =>
+      (currentIndex + direction + STORY_THEMES.length) % STORY_THEMES.length
+    );
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -160,10 +178,55 @@ export default function StoryModal({
           </div>
 
           {/* Preview visible */}
-          <StoryPreview
-            qr={qr}
-            message={message}
-          />
+          <div
+            className="mx-auto w-full max-w-[280px] overflow-hidden"
+            onTouchStart={(event) => {
+              touchStartXRef.current = event.touches[0].clientX;
+            }}
+            onTouchEnd={(event) => {
+              if (touchStartXRef.current === null) return;
+
+              handleTemplateSwipe(
+                touchStartXRef.current,
+                event.changedTouches[0].clientX
+              );
+              touchStartXRef.current = null;
+            }}
+            onPointerDown={(event) => {
+              if (event.pointerType !== "mouse") return;
+
+              mouseStartXRef.current = event.clientX;
+              event.currentTarget.setPointerCapture(event.pointerId);
+            }}
+            onPointerUp={(event) => {
+              if (event.pointerType !== "mouse" || mouseStartXRef.current === null) {
+                return;
+              }
+
+              handleTemplateSwipe(mouseStartXRef.current, event.clientX);
+              mouseStartXRef.current = null;
+            }}
+            onPointerCancel={(event) => {
+              if (event.pointerType === "mouse") {
+                mouseStartXRef.current = null;
+              }
+            }}
+          >
+            <div
+              className="flex transition-transform duration-300"
+              style={{ transform: `translateX(-${themeIndex * 100}%)` }}
+            >
+              {STORY_THEMES.map((template) => (
+                <div className="w-full shrink-0" key={template}>
+                  <StoryPreview
+                    qr={qr}
+                    message={message}
+                    theme={template}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* Preview oculto para exportación */}
           <div
@@ -180,13 +243,19 @@ export default function StoryModal({
               ref={storyRef}
               qr={qr}
               message={message}
+              theme={theme}
             />
           </div>
 
           <div className="mt-6 flex justify-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-black" />
-            <div className="w-2 h-2 rounded-full bg-gray-300" />
-            <div className="w-2 h-2 rounded-full bg-gray-300" />
+            {STORY_THEMES.map((template, index) => (
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  index === themeIndex ? "bg-black" : "bg-gray-300"
+                }`}
+                key={template}
+              />
+            ))}
           </div>
 
           <div className="mt-8">
@@ -211,6 +280,7 @@ export default function StoryModal({
                 outline-none
               "
             />
+
           </div>
 
           <button
