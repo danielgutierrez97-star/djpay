@@ -1,15 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function DJLoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const passwordReset =
-    searchParams.get("passwordReset");
+  const passwordReset = searchParams.get("passwordReset");
 
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
@@ -94,7 +93,6 @@ export default function DJLoginPage() {
           onSubmit={handleSubmit}
           className="space-y-5"
         >
-
           <input
             type="text"
             placeholder="Instagram o correo"
@@ -169,10 +167,17 @@ export default function DJLoginPage() {
               ¿Olvidaste tu contraseña?
             </Link>
           </div>
-
         </form>
 
       </div>
     </main>
+  );
+}
+
+export default function DJLoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginContent />
+    </Suspense>
   );
 }
