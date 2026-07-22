@@ -33,7 +33,7 @@ const StoryPreview = forwardRef<HTMLDivElement, StoryPreviewProps>(
           max-w-[280px]
           aspect-[9/16]
           ${backgroundClass}
-          rounded-[28px]
+          rounded-none
           flex
           flex-col
           items-center
