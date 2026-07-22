@@ -97,7 +97,7 @@ export default function QRCodeCard({
               transition
             "
           >
-            ✨ Crear historia
+            ✨ Compartir en Instagram
           </button>
 
         </div>

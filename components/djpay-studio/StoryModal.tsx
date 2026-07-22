@@ -26,6 +26,9 @@ export default function StoryModal({
   const [isStoryReady, setIsStoryReady] = useState(false);
   const [exportError, setExportError] = useState("");
 
+  const [storyImage, setStoryImage] = useState("");
+  const [showStoryViewer, setShowStoryViewer] = useState(false);
+
   const storyRef = useRef<HTMLDivElement>(null);
   const warmUpPromiseRef = useRef<Promise<void> | null>(null);
   const touchStartXRef = useRef<number | null>(null);
@@ -137,17 +140,15 @@ export default function StoryModal({
       );
 
       const dataUrl = await toPng(storyRef.current, {
-        cacheBust: true,
-        pixelRatio: 1,
-        canvasWidth: 1080,
-        canvasHeight: 1920,
-        backgroundColor: "#ffffff",
-      });
+  cacheBust: true,
+  pixelRatio: 1,
+  canvasWidth: 1080,
+  canvasHeight: 1920,
+  backgroundColor: "#ffffff",
+});
 
-      const link = document.createElement("a");
-      link.download = "djpay-story.png";
-      link.href = dataUrl;
-      link.click();
+setStoryImage(dataUrl);
+setShowStoryViewer(true);
     } catch (error) {
       console.error(error);
       setExportError(
@@ -159,6 +160,58 @@ export default function StoryModal({
   }
 
   if (!open) return null;
+  if (showStoryViewer) {
+  return (
+    <div className="fixed inset-0 z-50 bg-black/60 overflow-y-auto">
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="w-full max-w-md rounded-3xl border-4 border-black bg-white p-8 shadow-2xl">
+
+          <h2 className="text-2xl font-bold text-center text-black">
+            ¡Tu historia está lista!
+          </h2>
+
+          <img
+            src={storyImage}
+            alt="Historia DJPay"
+            className="mt-6 w-full rounded-3xl"
+          />
+
+          <p className="mt-6 text-center text-black font-medium">
+            Mantén presionada la imagen para guardarla en tu teléfono.
+          </p>
+
+          <p className="mt-3 text-center text-sm text-gray-600">
+            iPhone: Guardar en Fotos.
+            <br />
+            Android: Descargar imagen.
+          </p>
+
+          <button
+            onClick={() => {
+              setShowStoryViewer(false);
+              setStoryImage("");
+            }}
+            className="
+              mt-8
+              w-full
+              border-2
+              border-black
+              rounded-2xl
+              p-4
+              font-semibold
+              text-black
+              hover:bg-gray-50
+              transition
+            "
+          >
+            Volver al editor
+          </button>
+
+        </div>
+      </div>
+    </div>
+  );
+}
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 overflow-y-auto">
@@ -304,7 +357,7 @@ export default function StoryModal({
             {isExporting
               ? "Generando historia..."
               : isStoryReady
-                ? "⬇ Descargar historia"
+                ? "⬇ Compartir en Instagram"
                 : "Preparando historia..."}
           </button>
 
